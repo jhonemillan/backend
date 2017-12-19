@@ -21,7 +21,11 @@ MongoClient.connect('mongodb://localhost:27017/test',(err, db)=>{
         console.log(rows);
     });
 
-    
+    db.db('test').collection('users').deleteOne({
+        _id: new ObjectID("5a389a1b11bc7d3d89759aa6")
+    }).then((res)=>{
+        console.log(res);
+    });
 
     db.close();
 })
