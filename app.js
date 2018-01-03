@@ -12,7 +12,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/api/add',(req, res)=>{
     var usuario = new user({
         name: req.body.name,
-        zodiac : req.body.zodia
+        zodiac : req.body.zodiac
     });
 
     usuario.save().then((doc)=>{
@@ -20,8 +20,20 @@ app.post('/api/add',(req, res)=>{
     },(err)=>{
         res.status(400).send(err.message);
     });
-})
+});
+
+app.get('/api/users',(req, res)=>{
+    user.find().then((data)=>{
+        res.send(data);
+    });
+
+   
+});
+
 
 app.listen(port, ()=>{
     console.log('Se conecta al puerto ' + port)
 })
+
+
+module.exports = {app};
