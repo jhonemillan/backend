@@ -28,15 +28,17 @@ describe('api/add', function() {
     });
   });
 
-  describe('GET /user', function() {
+  describe('GET /users', function() {
     it('respond with json', function(done) {
       request(app)
-        .get('/')                
-        .expect(200, done)
+        .get('/api/users')                
+        .expect(200)        
         .end((err, res)=>{
             if(err){
                return done(err);
             }
+
+            console.log(res.body)
 
             done();
         });
