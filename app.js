@@ -1,7 +1,9 @@
+
 var express = require('express');
 var bodyparser = require('body-parser');
 var mongoose = require('./db/connector');
 var user = require('./model/user');
+var { ObjectID } = require('mongodb');
 var app = express();
 var port = 3000;
 
@@ -29,6 +31,19 @@ app.get('/api/users',(req, res)=>{
 
    
 });
+
+app.get('/api/users/:id',(req, res)=>{
+    
+    if(!ObjectID.isValid(req.params.id)){
+        
+        return res.sendStatus(404);
+    }
+    
+    user.findById(req.params.id).then((user)=>{
+        if(!user){ res.send('id not found')}
+        res.send(user);
+    }).catch((e)=>{res.sendStatus(500);});
+})
 
 
 app.listen(port, ()=>{
