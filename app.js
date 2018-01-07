@@ -41,8 +41,20 @@ app.get('/api/users/:id',(req, res)=>{
     
     user.findById(req.params.id).then((user)=>{
         if(!user){ res.send('id not found')}
-        res.send(user);
+        res.sendStatus(404);
     }).catch((e)=>{res.sendStatus(500);});
+});
+
+app.delete('/api/users/del/:id',(req, res)=>{
+    console.log(req.params);
+    if(!ObjectID.isValid(req.params.id)){
+        
+        return res.sendStatus(404);
+    }
+
+    user.findByIdAndRemove(req.params.id).then((data)=>{
+        res.send(data);
+    })
 })
 
 
