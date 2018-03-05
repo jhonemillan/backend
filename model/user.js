@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var SHA256 = require("crypto-js/sha256");
 var jwt = require('jsonwebtoken');
+var _ = require('lodash');
+
 var Schema = mongoose.Schema;
 
 
@@ -16,11 +18,7 @@ User = new Schema({
         required: true,
         trim: true,
         minlength: 10,
-        unique: true,
-        validate:{
-            validator: validator.isEmail,
-            message: 'is not valid email'
-        }
+        unique: true       
     },
     password: {
         type: String,
@@ -34,5 +32,45 @@ User = new Schema({
     }]
 
 });
+
+User.methods.generateAuthToken = function (){
+    var user = this;
+    var access = 'auth';
+    var token = jwt.sign({
+        _id: user._id.toHexString(),
+        access
+    },'victoria').toString();
+
+    user.tokens = user.tokens.concat([{access,token}]);
+
+    return user.save()
+    .then(()=>{
+        return token;
+    });
+};
+
+User.methods.toJSON = function (){
+    var user = this;
+    var userObject = user.toObject();
+    return _.pick(userObject, ['_id', 'email'])
+}
+
+User.statics.findByToken = function (token){
+    var User = this;
+    var decoded;
+
+    try {
+        decoded = jwt.verify(token,'victoria');
+    } catch (error) {
+        return Promise.reject();
+    }
+
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    })
+    
+}
 
 module.exports = mongoose.model('user',User,'users');

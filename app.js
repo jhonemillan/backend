@@ -4,6 +4,8 @@ var bodyparser = require('body-parser');
 var mongoose = require('./db/connector');
 var user = require('./model/user');
 var { ObjectID } = require('mongodb');
+var aut = require('./middleware/autenticate').authenticate;
+
 
 var app = express();
 var port = 3000;
@@ -19,21 +21,31 @@ app.post('/api/add',(req, res)=>{
         email: req.body.email,
         password: req.body.password
     });
-
-    usuario.save().then((doc)=>{
-        res.send(doc)    
-    },(err)=>{
-        res.status(400).send(err.message);
-    });
+    console.log('entra');
+    debugger;
+    usuario.save().then(()=>{
+        return usuario.generateAuthToken();
+    })
+    .then((token)=>{
+        res.header('x-auth',token).send(user);        
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.sendStatus(400);        
+    })
 });
 
 app.get('/api/users',(req, res)=>{
     user.find().then((data)=>{
         res.send(data);
     });
-
-   
 });
+
+
+
+app.get('/api/users/me',aut, (req,res)=>{
+    res.send(req.user);
+})
 
 app.get('/api/users/:id',(req, res)=>{
     
