@@ -20,14 +20,12 @@ app.post('/api/add',(req, res)=>{
         zodiac : req.body.zodiac,
         email: req.body.email,
         password: req.body.password
-    });
-    console.log('entra');
-    debugger;
+    });    
     usuario.save().then(()=>{
         return usuario.generateAuthToken();
     })
     .then((token)=>{
-        res.header('x-auth',token).send(user);        
+        res.header('x-auth',token).send(usuario);        
     })
     .catch((err)=>{
         console.log(err);

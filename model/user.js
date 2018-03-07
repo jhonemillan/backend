@@ -3,6 +3,7 @@ var validator = require('validator');
 var SHA256 = require("crypto-js/sha256");
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
+var bcrypt = require('bcryptjs');
 
 var Schema = mongoose.Schema;
 
@@ -33,6 +34,21 @@ User = new Schema({
 
 });
 
+User.pre('save',function(next){
+    var user = this;
+    if(!user.isModified('password')){
+        return next();
+    }
+
+    // hash the password along with our new salt
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            user.password = hash; 
+            next();
+        });
+    });
+})
+
 User.methods.generateAuthToken = function (){
     var user = this;
     var access = 'auth';
@@ -50,6 +66,7 @@ User.methods.generateAuthToken = function (){
 };
 
 User.methods.toJSON = function (){
+    debugger;
     var user = this;
     var userObject = user.toObject();
     return _.pick(userObject, ['_id', 'email'])
