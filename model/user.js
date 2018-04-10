@@ -1,25 +1,21 @@
 var mongoose = require('mongoose');
-var validator = require('validator');
 var SHA256 = require("crypto-js/sha256");
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
+const validator = require('node-mongoose-validator');
 
 var Schema = mongoose.Schema;
 
 
-User = new Schema({
-    name: {type: String, required: true},
-    lastname: String,
-    age: {type: Number, min: 12,max: 90},
-    zodiac: {type: String, required: true, enum: ['aries', 'tauro', 'leo', 'virgo', 'Cancer']},
-    sons: [{name:String, age: Number}],
+User = new Schema({  
     email: {
         type: String,
         required: true,
         trim: true,
         minlength: 10,
-        unique: true       
+        unique: true,
+        index: true
     },
     password: {
         type: String,
@@ -33,6 +29,7 @@ User = new Schema({
     }]
 
 });
+User.path('email').validate(validator.isEmail(), 'Please provide a valid email address');
 
 User.pre('save',function(next){
     var user = this;

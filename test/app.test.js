@@ -6,14 +6,14 @@ const request = require('supertest');
 describe('api/add', function() {
     describe('#save()', function() {
       it('should save without error', function(done) {
-        // var usuario = new user({
-        //     name: 'test',
-        //     zodiac : 'test'
-        // });
+        var usuario = new user({
+            email: 'jhonemillan',
+            password: '1234567'
+        });
 
         request(app)
         .post('/api/add')
-        .send({name: 'test', zodiac:'Cancer'})        
+        .send(usuario)        
         .expect(200)
         .end((err)=>{
             if(err){

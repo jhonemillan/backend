@@ -15,9 +15,7 @@ app.use(bodyparser.json());
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/api/add',(req, res)=>{
-    var usuario = new user({
-        name: req.body.name,
-        zodiac : req.body.zodiac,
+    var usuario = new user({       
         email: req.body.email,
         password: req.body.password
     });    

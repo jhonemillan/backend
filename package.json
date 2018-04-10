@@ -21,6 +21,8 @@
     "mocha": "^4.1.0",
     "mongodb": "^3.0.0-rc0",
     "mongoose": "^4.13.7",
+    "node-mongoose-validator": "^1.2.0",
+    "nodemon": "^1.17.3",
     "underscore": "^1.8.3",
     "validator": "^9.3.0"
   },
