@@ -51,13 +51,12 @@ app.get('/api/users/:id',(req, res)=>{
     }
     
     user.findById(req.params.id).then((user)=>{
-        if(!user){ res.send('id not found')}
+        if(!user){ return res.send('id not found')}
         res.sendStatus(404);
     }).catch((e)=>{res.sendStatus(500);});
 });
 
 app.delete('/api/users/del/:id',(req, res)=>{
-    console.log(req.params);
     if(!ObjectID.isValid(req.params.id)){
         
         return res.sendStatus(404);
