@@ -83,8 +83,29 @@ User.statics.findByToken = function (token){
         '_id': decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
-    })
-    
+    });
+}
+
+User.statics.findByCredentials = function(email, pwd){
+    debugger;
+    let User = this;    
+    return User.findOne({email}).then((user)=>{         
+        if(!user){            
+            return Promise.reject(new Error('Usuario no existe'));
+        }
+
+        return new Promise((resolve, reject)=>{
+            bcrypt.compare(pwd, user.password).then((res)=>{
+                if(res){
+                    resolve(user);
+                }else{                
+                    reject(new Error('incorrect password'));
+                }
+            }).catch((e)=>{
+                console.log(e);
+            });
+        });
+    });
 }
 
 module.exports = mongoose.model('user',User,'users');

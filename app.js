@@ -37,6 +37,16 @@ app.get('/api/users',(req, res)=>{
     });
 });
 
+//route for login
+app.post('/api/users/login', (req,res)=>{    
+    user.findByCredentials(req.body.email, req.body.password).then((user)=>{
+        res.header('x-auth',user.tokens[0].token).send(user);     
+    })
+    .catch((e)=>{        
+        res.status(500).send(e.message);
+    })
+});
+
 
 
 app.get('/api/users/me',aut, (req,res)=>{
